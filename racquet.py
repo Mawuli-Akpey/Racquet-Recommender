@@ -33,32 +33,17 @@ def recommend_racquets(user_preferences, df, N=5):
     user_df = pd.DataFrame(user_preferences, index=[0])
 
     # Fill missing values with mean
-    df_filled = df.copy()
-    for col in df_filled.select_dtypes(include=np.number).columns:
-        df_filled[col] = df_filled[col].fillna(df_filled[col].mean())
-        
-    user_df_filled = user_df.fillna(user_df.mean())
+    df_filled = df.fillna(df.mean())
+    user_df_filled = user_df.fillna(df.mean())
 
     # Compute cosine similarity between user preferences and racquets
-    similarity_scores = cosine_similarity(user_df_filled, df_filled.select_dtypes(include=np.number))
+    similarity_scores = cosine_similarity(user_df_filled, df_filled)
 
     # Get indices of top N racquets
     top_racquet_indices = similarity_scores[0].argsort()[-N:][::-1]
 
     # Return these racquets
     return top_racquet_indices
-
-# Load data
-df = pd.read_csv('final.csv')
-
-# Get unique values for mappings
-composition_mapping = {category: i for i, category in enumerate(df['Composition:'].dropna().unique())}
-
-# Apply mappings
-df['Power Level:'] = df['Power Level:'].map(power_level_mapping)
-df['Racquet Type'] = df['Racquet Type'].map(racquet_type_mapping)
-df['Stroke Style:'] = df['Stroke Style:'].map(stroke_style_mapping)
-df['Composition:'] = df['Composition:'].map(composition_mapping)
 
 # Display title
 st.title('Tennis Racquet Recommendation System')
