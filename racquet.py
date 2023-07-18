@@ -64,6 +64,10 @@ df['Composition:'] = df['Composition:'].map(composition_mapping)
 st.title('Tennis Racquet Recommendation System')
 
 # Get user input
+numeric_columns = ["Head Size:", "Length:", "Strung Weight:", "Swingweight:", "Stiffness:", "Price"]
+for col in numeric_columns:
+    df[col] = pd.to_numeric(df[col], errors='coerce')
+
 head_size = st.slider("Head Size:", float(df["Head Size:"].min()), float(df["Head Size:"].max()))
 length = st.slider("Length:", float(df["Length:"].min()), float(df["Length:"].max()))
 strung_weight = st.slider("Strung Weight:", float(df["Strung Weight:"].min()), float(df["Strung Weight:"].max()))
