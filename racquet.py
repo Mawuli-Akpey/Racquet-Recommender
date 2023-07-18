@@ -89,4 +89,12 @@ user_preferences = {
     "Racquet Type": racquet_type_mapping[racquet_type],
     "Composition:": composition_mapping[composition], 
     "Power Level:": power_level_mapping[power_level], 
-    "Stroke Style:": stroke_style
+    "Stroke Style:": stroke_style}
+
+# Get recommendations
+recommendation_indices = recommend_racquets(user_preferences, df.drop(columns=["Racquet Name", "URL"]))
+recommended_racquets = df.iloc[recommendation_indices][["Racquet Name", "URL"]]
+
+# Display recommendations
+st.header('Recommended Racquets:')
+st.table(recommended_racquets)
