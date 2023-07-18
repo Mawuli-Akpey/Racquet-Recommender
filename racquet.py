@@ -52,7 +52,7 @@ def recommend_racquets(user_preferences, df, N=5):
 df = pd.read_csv('final.csv')
 
 # Get unique values for mappings
-composition_mapping = {category: i for i, category in enumerate(df['Composition:'].unique())}
+composition_mapping = {category: i for i, category in enumerate(df['Composition:'].dropna().unique())}
 
 # Apply mappings
 df['Power Level:'] = df['Power Level:'].map(power_level_mapping)
@@ -75,7 +75,7 @@ swingweight = st.slider("Swingweight:", float(df["Swingweight:"].min()), float(d
 stiffness = st.slider("Stiffness:", float(df["Stiffness:"].min()), float(df["Stiffness:"].max()))
 price = st.slider("Price:", float(df["Price"].min()), float(df["Price"].max()))
 racquet_type = st.selectbox('Racquet Type', list(racquet_type_mapping.keys()))
-composition = st.selectbox('Composition:', list(df['Composition:'].unique()))
+composition = st.selectbox('Composition:', list(df['Composition:'].dropna().unique()))
 power_level = st.selectbox('Power Level:', list(power_level_mapping.keys()))
 stroke_style = st.selectbox('Stroke Style:', list(stroke_style_mapping.keys()))
 
@@ -87,7 +87,7 @@ user_preferences = {
     "Stiffness:": stiffness, 
     "Price": price, 
     "Racquet Type": racquet_type_mapping[racquet_type],
-    "Composition:": composition_mapping[composition], 
+    "Composition:": composition_mapping.get(composition, np.nan), 
     "Power Level:": power_level_mapping[power_level], 
     "Stroke Style:": stroke_style_mapping[stroke_style]
 }
