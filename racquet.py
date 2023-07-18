@@ -37,7 +37,7 @@ stroke_style_mapping = {
     'Full': 5.0
 }
 
-composition_mapping = {category: i for i, category in enumerate(df_selected['Composition:'].unique())}
+composition_mapping = {category: i for i, category in enumerate(df['Composition:'].unique())}
 
 # Apply mappings
 df['Power Level:'] = df['Power Level:'].map(power_level_mapping)
