@@ -47,7 +47,7 @@ power_level_mapping = {
 }
 
 # Read data
-df = pd.read_csv('cleaned_data.csv')
+df = pd.read_csv('selected.csv')
 
 # Define composition_mapping
 composition_mapping = {category: i for i, category in enumerate(df['Composition:'].unique())}
