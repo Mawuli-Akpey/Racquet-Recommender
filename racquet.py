@@ -22,9 +22,36 @@ def recommend_racquets(user_preferences, df, N=5):
     # Return these racquets
     return top_racquet_indices
 
+# Define mappings
+racquet_type_mapping = {
+    'All Around Racquets': 1.0,
+    "Traditional Player's Racquets": 2.0,
+    'Spin Racquets': 3.0,
+    'Power Racquets': 4.0
+}
+
+stroke_style_mapping = {
+    'Compact': 1.0,
+    'Compact-Medium': 2.0,
+    'Medium': 3.0,
+    'Medium-Full': 4.0,
+    'Full': 5.0
+}
+
+power_level_mapping = {
+    'Low': 1.0,
+    'Low-Medium': 2.0,
+    'Medium': 3.0,
+    'Medium-High': 4.0,
+    'High': 5.0
+}
+
 
 # Read data
 df = pd.read_csv('final.csv')
+
+# Define composition_mapping
+composition_mapping = {category: i for i, category in enumerate(df['Composition:'].unique())}
 
 # Display title
 st.title('Tennis Racquet Recommendation System')
