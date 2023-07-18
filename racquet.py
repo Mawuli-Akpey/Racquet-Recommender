@@ -16,13 +16,14 @@ def recommend_racquets(user_preferences, df, N=5):
     user_df_filled[df_numeric.columns] = user_df[df_numeric.columns].fillna(df_numeric.mean()).replace([np.inf, -np.inf], np.finfo('float64').max)
 
     # Compute cosine similarity between user preferences and racquets
-    similarity_scores = cosine_similarity(user_df_filled, df_filled)
+    similarity_scores = cosine_similarity(user_df_filled[df_numeric.columns], df_filled[df_numeric.columns])
 
     # Get indices of top N racquets
     top_racquet_indices = similarity_scores[0].argsort()[-N:][::-1]
 
     # Return these racquets
     return df.iloc[top_racquet_indices]
+
 
 
 
