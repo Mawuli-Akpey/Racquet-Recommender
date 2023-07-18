@@ -51,8 +51,9 @@ def recommend_racquets(user_preferences, df, N=5):
     user_df = pd.DataFrame(user_preferences, index=[0])
 
     # Fill missing values with mean
-    df_filled = df.fillna(df.mean())
-    user_df_filled = user_df.fillna(user_df.mean())
+    df_filled = df.copy()
+    df_filled.loc[:, df_filled.select_dtypes(include=np.number).columns] = df_filled.select_dtypes(include=np.number).fillna(df.mean())
+
 
     # Compute cosine similarity between user preferences and racquets
     similarity_scores = cosine_similarity(user_df_filled, df_filled)
