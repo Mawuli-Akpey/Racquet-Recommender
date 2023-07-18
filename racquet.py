@@ -1,3 +1,4 @@
+import streamlit as st
 import pandas as pd
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
@@ -7,18 +8,14 @@ def recommend_racquets(user_preferences, df, N=5):
     # Create a DataFrame with user preferences
     user_df = pd.DataFrame(user_preferences, index=[0])
 
-    # Fill missing values with mean
-    df_filled = df.fillna(df.mean())
-    user_df_filled = user_df.fillna(df.mean())
-
     # Compute cosine similarity between user preferences and racquets
-    similarity_scores = cosine_similarity(user_df_filled, df_filled)
+    similarity_scores = cosine_similarity(user_df, df)
 
     # Get indices of top N racquets
     top_racquet_indices = similarity_scores[0].argsort()[-N:][::-1]
 
     # Return these racquets
-    return df.iloc[top_racquet_indices][["Racquet Name", "URL"]]
+    return df.iloc[top_racquet_indices]
 
 # Define mappings
 racquet_type_mapping = {
@@ -45,27 +42,29 @@ power_level_mapping = {
 }
 
 # Read data
-df = pd.read_csv('final.csv')
+df = pd.read_csv('cleaned_data.csv')
 
 # Define composition_mapping
 composition_mapping = {category: i for i, category in enumerate(df['Composition:'].unique())}
+
+# Display title
+st.title('Tennis Racquet Recommendation System')
 
 # Get user input
 numeric_columns = ["Head Size:", "Length:", "Strung Weight:", "Swingweight:", "Stiffness:", "Price"]
 for col in numeric_columns:
     df[col] = pd.to_numeric(df[col], errors='coerce')
 
-# Replace the Streamlit user inputs with direct inputs
-head_size = 100  # replace with your desired head size
-length = 27  # replace with your desired length
-strung_weight = 300  # replace with your desired strung weight
-swingweight = 320  # replace with your desired swingweight
-stiffness = 65  # replace with your desired stiffness
-price = 200  # replace with your desired price
-racquet_type = 'All Around Racquets'  # replace with your desired racquet type
-composition = 'Graphite'  # replace with your desired composition
-power_level = 'Medium'  # replace with your desired power level
-stroke_style = 'Full'  # replace with your desired stroke style
+head_size = st.slider("Head Size:", float(df["Head Size:"].min()), float(df["Head Size:"].max()))
+length = st.slider("Length:", float(df["Length:"].min()), float(df["Length:"].max()))
+strung_weight = st.slider("Strung Weight:", float(df["Strung Weight:"].min()), float(df["Strung Weight:"].max()))
+swingweight = st.slider("Swingweight:", float(df["Swingweight:"].min()), float(df["Swingweight:"].max()))
+stiffness = st.slider("Stiffness:", float(df["Stiffness:"].min()), float(df["Stiffness:"].max()))
+price = st.slider("Price:", float(df["Price"].min()), float(df["Price"].max()))
+racquet_type = st.selectbox('Racquet Type', list(racquet_type_mapping.keys()))
+composition = st.selectbox('Composition:', list(df['Composition:'].unique()))
+power_level = st.selectbox('Power Level:', list(power_level_mapping.keys()))
+stroke_style = st.selectbox('Stroke Style:', list(stroke_style_mapping.keys()))
 
 user_preferences = {
     "Head Size:": head_size, 
@@ -75,7 +74,7 @@ user_preferences = {
     "Stiffness:": stiffness, 
     "Price": price, 
     "Racquet Type": racquet_type_mapping[racquet_type],
-    "Composition:": composition_mapping.get(composition, np.nan), 
+    "Composition:": composition_mapping[composition], 
     "Power Level:": power_level_mapping[power_level], 
     "Stroke Style:": stroke_style_mapping[stroke_style]
 }
@@ -83,4 +82,6 @@ user_preferences = {
 # Get recommendations
 recommended_racquets = recommend_racquets(user_preferences, df)
 
-print(recommended_racquets)
+# Display recommendations
+st.header('Recommended Racquets:')
+st.table(recommended_racquets)
