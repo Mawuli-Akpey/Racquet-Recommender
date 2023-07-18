@@ -3,14 +3,17 @@ import pandas as pd
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 
-# Define function to recommend racquets
 def recommend_racquets(user_preferences, df, N=5):
     # Create a DataFrame with user preferences
     user_df = pd.DataFrame(user_preferences, index=[0])
 
-    # Fill missing values with mean and replace infinity with maximum finite value
-    df_filled = df.fillna(df.mean()).replace([np.inf, -np.inf], np.finfo('float64').max)
-    user_df_filled = user_df.fillna(df.mean()).replace([np.inf, -np.inf], np.finfo('float64').max)
+    # Fill missing values with mean for numeric columns and replace infinity with maximum finite value
+    df_numeric = df.select_dtypes(include=[np.number])
+    df_filled = df.copy()
+    df_filled[df_numeric.columns] = df_numeric.fillna(df_numeric.mean()).replace([np.inf, -np.inf], np.finfo('float64').max)
+
+    user_df_filled = user_df.copy()
+    user_df_filled[df_numeric.columns] = user_df[df_numeric.columns].fillna(df_numeric.mean()).replace([np.inf, -np.inf], np.finfo('float64').max)
 
     # Compute cosine similarity between user preferences and racquets
     similarity_scores = cosine_similarity(user_df_filled, df_filled)
@@ -20,6 +23,7 @@ def recommend_racquets(user_preferences, df, N=5):
 
     # Return these racquets
     return df.iloc[top_racquet_indices]
+
 
 
 # Define mappings
