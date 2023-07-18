@@ -76,22 +76,27 @@ composition = st.selectbox('Composition:', list(df['Composition:'].unique()))
 power_level = st.selectbox('Power Level:', list(power_level_mapping.keys()))
 stroke_style = st.selectbox('Stroke Style:', list(stroke_style_mapping.keys()))
 
-user_preferences = {
-    "Head Size:": head_size, 
-    "Length:": length, 
-    "Strung Weight:": strung_weight, 
-    "Swingweight:": swingweight, 
-    "Stiffness:": stiffness, 
-    "Price": price, 
-    "Racquet Type": racquet_type_mapping[racquet_type],
-    "Composition:": composition_mapping[composition], 
-    "Power Level:": power_level_mapping[power_level], 
-    "Stroke Style:": stroke_style_mapping[stroke_style]
-}
+# Get user input
+# ... (your existing code to get user input)
 
-# Get recommendations
-recommended_racquets = recommend_racquets(user_preferences, df)
+# Add button
+if st.button('Get Recommendations'):
+    user_preferences = {
+        "Head Size:": head_size, 
+        "Length:": length, 
+        "Strung Weight:": strung_weight, 
+        "Swingweight:": swingweight, 
+        "Stiffness:": stiffness, 
+        "Price": price, 
+        "Racquet Type": racquet_type_mapping[racquet_type],
+        "Composition:": composition_mapping[composition], 
+        "Power Level:": power_level_mapping[power_level], 
+        "Stroke Style:": stroke_style_mapping[stroke_style]
+    }
 
-# Display recommendations
-st.header('Recommended Racquets:')
-st.table(recommended_racquets)
+    # Get recommendations
+    recommended_racquets = recommend_racquets(user_preferences, df)
+
+    # Display recommendations
+    st.header('Recommended Racquets:')
+    st.table(recommended_racquets)
