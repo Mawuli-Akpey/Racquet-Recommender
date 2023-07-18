@@ -1,8 +1,6 @@
-import streamlit as st
 import pandas as pd
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
-
 
 # Define function to recommend racquets
 def recommend_racquets(user_preferences, df, N=5):
@@ -20,7 +18,7 @@ def recommend_racquets(user_preferences, df, N=5):
     top_racquet_indices = similarity_scores[0].argsort()[-N:][::-1]
 
     # Return these racquets
-    return top_racquet_indices
+    return df.iloc[top_racquet_indices][["Racquet Name", "URL"]]
 
 # Define mappings
 racquet_type_mapping = {
@@ -46,31 +44,28 @@ power_level_mapping = {
     'High': 5.0
 }
 
-
 # Read data
 df = pd.read_csv('final.csv')
 
 # Define composition_mapping
 composition_mapping = {category: i for i, category in enumerate(df['Composition:'].unique())}
 
-# Display title
-st.title('Tennis Racquet Recommendation System')
-
 # Get user input
 numeric_columns = ["Head Size:", "Length:", "Strung Weight:", "Swingweight:", "Stiffness:", "Price"]
 for col in numeric_columns:
     df[col] = pd.to_numeric(df[col], errors='coerce')
 
-head_size = st.slider("Head Size:", float(df["Head Size:"].min()), float(df["Head Size:"].max()))
-length = st.slider("Length:", float(df["Length:"].min()), float(df["Length:"].max()))
-strung_weight = st.slider("Strung Weight:", float(df["Strung Weight:"].min()), float(df["Strung Weight:"].max()))
-swingweight = st.slider("Swingweight:", float(df["Swingweight:"].min()), float(df["Swingweight:"].max()))
-stiffness = st.slider("Stiffness:", float(df["Stiffness:"].min()), float(df["Stiffness:"].max()))
-price = st.slider("Price:", float(df["Price"].min()), float(df["Price"].max()))
-racquet_type = st.selectbox('Racquet Type', list(racquet_type_mapping.keys()))
-composition = st.selectbox('Composition:', list(df['Composition:'].dropna().unique()))
-power_level = st.selectbox('Power Level:', list(power_level_mapping.keys()))
-stroke_style = st.selectbox('Stroke Style:', list(stroke_style_mapping.keys()))
+# Replace the Streamlit user inputs with direct inputs
+head_size = 100  # replace with your desired head size
+length = 27  # replace with your desired length
+strung_weight = 300  # replace with your desired strung weight
+swingweight = 320  # replace with your desired swingweight
+stiffness = 65  # replace with your desired stiffness
+price = 200  # replace with your desired price
+racquet_type = 'All Around Racquets'  # replace with your desired racquet type
+composition = 'Graphite'  # replace with your desired composition
+power_level = 'Medium'  # replace with your desired power level
+stroke_style = 'Full'  # replace with your desired stroke style
 
 user_preferences = {
     "Head Size:": head_size, 
@@ -86,9 +81,6 @@ user_preferences = {
 }
 
 # Get recommendations
-recommendation_indices = recommend_racquets(user_preferences, df)
-recommended_racquets = df.iloc[recommendation_indices][["Racquet Name", "URL"]]
+recommended_racquets = recommend_racquets(user_preferences, df)
 
-# Display recommendations
-st.header('Recommended Racquets:')
-st.table(recommended_racquets)
+print(recommended_racquets)
