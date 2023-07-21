@@ -65,12 +65,12 @@ numeric_columns = ["Head Size:", "Length:", "Strung Weight:", "Swingweight:", "S
 for col in numeric_columns:
     df[col] = pd.to_numeric(df[col], errors='coerce')
 
-head_size = st.slider("Head Size:", float(df["Head Size:"].min()), float(df["Head Size:"].max()))
-length = st.slider("Length:", float(df["Length:"].min()), float(df["Length:"].max()))
-strung_weight = st.slider("Strung Weight:", float(df["Strung Weight:"].min()), float(df["Strung Weight:"].max()))
+head_size = st.slider("Head Size (cm):", float(df["Head Size:"].min()), float(df["Head Size:"].max()))
+length = st.slider("Length (cm):", float(df["Length:"].min()), float(df["Length:"].max()))
+strung_weight = st.slider("Strung Weight (g):", float(df["Strung Weight:"].min()), float(df["Strung Weight:"].max()))
 swingweight = st.slider("Swingweight:", float(df["Swingweight:"].min()), float(df["Swingweight:"].max()))
 stiffness = st.slider("Stiffness:", float(df["Stiffness:"].min()), float(df["Stiffness:"].max()))
-price = st.slider("Price:", float(df["Price"].min()), float(df["Price"].max()))
+price = st.slider("Price ($):", float(df["Price"].min()), float(df["Price"].max()))
 racquet_type = st.selectbox('Racquet Type', list(racquet_type_mapping.keys()))
 composition = st.selectbox('Composition:', list(df['Composition:'].unique()))
 power_level = st.selectbox('Power Level:', list(power_level_mapping.keys()))
